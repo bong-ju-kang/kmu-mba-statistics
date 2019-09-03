@@ -1,0 +1,1058 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+
+1-2주차: R 언어 기본 익히기
+=========================
+
+# 숫자와 벡터
+### 벡터와 할당문
+
+```{r}
+x <- c(10.4, 5.6, 3.1, 6.4, 21.7)
+print(x)
+```
+
+### 객체의 구조
+```{r}
+str(x) # 디폴트는 열 벡터(column vector)
+str(t(x)) # 전치(transpose)하면 행 벡터(row vector)
+```
+
+## 벡터 연산
+```{r}
+y <- c(1, 2, 3, 4, 5)
+v <- 2*x + y + 1
+print(v)
+```
+
+### 기본 연산(원소별 연산): +, - , *, /, ^  
+### 기본 함수: log, exp, sin, cos, tan, sqrt, range
+#### 연산의 다양한 예
+
+```{r}
+1+2
+2^10
+2**10
+```
+```{r}
+log(2)
+log(exp(1))
+log2(2)
+log10(10)
+```
+
+```{r}
+pi
+sin(pi/2)
+cos(0)
+cos(pi/2)
+cos(pi/2) < 10**(-12)
+tan(0)
+tan(pi/2)
+```
+
+```{r}
+x = c(1, 2, 3, 4)
+log(x)
+range(x) # 최소값, 최대값
+```
+
+표본분산: 
+$$
+\sum_{i}(x_{i}-\bar{x})^{2} \over (n-1) 
+$$
+```{r}
+x = seq(1,10, 1)
+sum((x-mean(x))^2/(length(x)-1)) # 표본 분산
+var(x) # 표본 분산
+```
+
+```{r}
+sort(c(2,3,1,4))
+sort(c(2,3,1,4), decreasing=TRUE)
+```
+
+## 규칙 열(regular sequence) 생성
+### 열을 생성하는 방법
+```{r}
+seq(1, 10, 1)
+10:1
+seq(-1, 5, by=2)
+rep(c(1, 2, 3), times=5)
+rep(c(1, 2, 3), each=5)
+```
+
+## 논리 벡터
+### 논리 연산자: <, <=, >, >=, ==, !=  
+### 논리 표현의 결합: c1 & c2 (and), c1 | c2 (or)
+```{r}
+tmp <- c(1, 2,3) > 1
+print(tmp)
+1 == TRUE 
+0 == FALSE
+-1 == FALSE
+-1 == T
+3 == TRUE
+
+# 논리 벡터의 합
+sum(tmp)
+```
+
+### 논리 벡터의 결합
+```{r}
+tmp1 <- c(1, 2, 3) == 1
+tmp2 <- c(1, 2, 3) == c(1, 2, 7)
+tmp1 & tmp2
+tmp1 | tmp2
+```
+
+## 결측값
+### 결측값의 유형: NA(not available), NaN(not a number)
+```{r}
+x <- c(1:3, NA)
+is.na(x)
+
+0/0
+
+x <- c(1:3, NA, NaN)
+is.na(x)
+sum(is.na(x))
+```
+
+## 문자 벡터
+### 문자 벡터(character vector): 인용 부호("", '')내에 있는 문자 열
+```{r}
+x <- 'R 기반의 통계분석 기초부터 활용까지'
+print(x)
+
+paste(c("x", "y"),1:2, sep="")
+paste(c("x", "y"),1:5, sep="")
+paste(c("x", "y"),1:2, sep=",")
+paste0(c('x'), 1:10)
+```
+
+## 색인 벡터
+### 색인 벡터(index vector): 벡터의 원소(element) 값들을 가져오기 위한 벡터  
+### 색인 벡터의 유형: 논리 벡터, 양수값 벡터, 음수값 벡터, 문자열(string) 벡터
+
+### 논리 벡터
+```{r}
+x <- c(1:10, NA)
+x[!is.na(x)]
+x[(!is.na(x) & x>1)]
+```
+
+### 양수값/음수값 벡터
+```{r}
+x[1:5]
+x[-length(x)] # 해당 위치 값 제거
+x[-11:-9]
+```
+
+### 문자열 벡터
+```{r}
+x <- 1:3
+names(x)
+names(x) <- c("orange", "apple", "banana")
+print(x)
+x[c("orange")]
+```
+
+### 다른 유형의 객체
+### 행렬(matrix), 인자(factor), 리스트(list), 데이터프레임(data frame), 함수(function)
+
+### 행렬
+```{r}
+matrix(c(1:9)) # 열 벡터
+matrix(c(1:9), nrow=3) # 열 우선
+matrix(c(1:9), nrow=3, byrow=T)
+```
+
+### 리스트
+```{r}
+list(c(1:9), 2:10)
+list(x=c(1:9), y=2:10)
+plot(x=c(1:9), y=2:10)
+```
+
+### 데이터프레임
+```{r}
+data.frame(matrix(c(1:9), nrow=3, byrow=T))
+```
+
+### 함수
+```{r}
+add <- function(x, y){
+  return(x+y)
+}
+add(1, 2)
+```
+
+
+# 객체, 모드 그리고 속성
+
+## 타고난 속성: 모드, 길이
+### 숫자: numeric
+```{r}
+x <- 1:10
+mode(x)
+length(x)
+typeof(x)
+
+x <- c(0.1, 1, 0.3)
+mode(x) 
+length(x)
+typeof(x)
+```
+
+### 복소수: complex
+```{r}
+x <- 1+2i
+mode(x) 
+length(x)
+typeof(x)
+```
+
+### 문자: character
+```{r}
+y <-"R 기본 개념"
+mode(y)
+length(y)
+```
+
+### 리스트
+```{r}
+z <- list(x, y)
+mode(z)
+length(z)
+# 리스트는 리스트를 품을 수 있음
+is.recursive(z)
+```
+
+### 모드의 변경
+```{r}
+x <- c(0.1, 1, 0.3)
+xtoc <- as.character(x)
+print(xtoc)
+mode(xtoc)
+
+ctox <- as.integer(xtoc)
+print(ctox)
+mode(ctox)
+```
+
+## 객체 길이 변경
+객체의 길이는 변경 가능하다.
+```{r}
+x <- numeric()
+print(x)
+length(x)
+
+x <- numeric(5)
+print(x)
+
+x[10] <- 10
+print(x)
+x[11] <- 11
+print(x)
+
+length(x) <- c(5)
+print(x)
+```
+
+## 객체 속성의 정의
+타고난(intrinsic) 속성 또는 고유 속성(모드와 길이)이 아닌 속성에 대한 
+정의 및 조회
+
+### 속성 정의
+```{r}
+x <- numeric()
+length(x) <- 5*5
+print(x)
+
+attr(x, "dim") <- c(5,5)
+print(x)
+```
+
+### 속성 조회
+```{r}
+attr(x, "dim")
+dim(x)
+nrow(x)
+ncol(x)
+```
+
+## 객체의 클래스
+객체의 행동을 정의(속성 및 타 클래스와의 관계 정의를 통하여)
+### 숫자 정수형
+```{r}
+x <- 1:10
+mode(x)
+typeof(x)
+class(x)
+```
+
+### 숫자 실수형
+```{r}
+x <- c(1.1, 2.1)
+mode(x)
+typeof(x)
+class(x)
+```
+
+### 문자형
+```{r}
+letters
+mode(letters)
+typeof(letters)
+class(letters)
+```
+
+### 리스트
+```{r}
+x <- list(A=c(1, 2, 3), B=c("ab", "bc", "cd"))
+mode(x)
+typeof(x)
+class(x)
+```
+
+### 데이터프레임
+```{r}
+df <- as.data.frame(x)
+mode(df)
+typeof(df)
+class(df)
+```
+
+### 클래스의 제거
+```{r}
+udf <- unclass(df)
+class(udf)
+```
+
+# 순서, 무순서 요인
+## 예를 통한 이해
+
+### 숫자 데이터
+```{r}
+x <- c(1, 2, 3, 4, 3, 4, 5)
+x_fac <- factor(x)
+print(x_fac)
+levels(x_fac)
+plot(x_fac)
+```
+
+### 범주 데이터
+호주의 행정구역 데이터
+```{r}
+state <- c("tas", "sa", "qld", "nsw", "nsw", "nt", "wa", "wa",
+"qld", "vic", "nsw", "vic", "qld", "qld", "sa", "tas",
+"sa", "nt", "wa", "vic", "qld", "nsw", "nsw", "wa",
+"sa", "act", "nsw", "vic", "vic", "act")
+table(state)
+```
+
+값 순서대로 정렬
+```{r}
+statef <- factor(state)
+print(statef)
+plot(statef)
+```
+
+### 요인의 속성
+```{r}
+mode(statef) # 고유 속성은 숫자
+length(statef) # 길이는 원래 데이터와 동일
+class(statef)
+levels(statef) # 알파벳 순으로 정렬
+is.ordered(statef) # 순서가 있는 인자인지 확인
+ordered(state) # 순서가 있는 경우
+```
+
+### 요인의 활용
+tapply(), 비정형 배열(ragged array)
+```{r}
+# 인자와 같은 크기의 수입 데이터
+incomes <- c(60, 49, 40, 61, 64, 60, 59, 54, 62, 69, 70, 42, 56,
+61, 61, 61, 58, 51, 48, 65, 49, 49, 41, 48, 52, 46,
+59, 46, 58, 43)
+length(statef)
+length(incomes)
+```
+
+수입 데이터를 인자 별로 분류하고 각 인자 별 평균을 구한다.
+```{r}
+incmeans <- tapply(incomes, statef, mean)
+print(incmeans, digits=4)
+```
+
+표준편차를 구한다.
+$$
+\sqrt{Var(\bar{x})}=\sqrt{Var(x)\over{n}}
+$$
+
+```{r}
+stdError <- function(x) sqrt(var(x)/length(x))
+incster <- tapply(incomes, statef, stdError)
+print(incster, digits=4)
+```
+
+# 배열과 행렬
+## 배열 정의
+2차원 이상의 데이터를 저장할 수 있는 데이터 객체
+```{r}
+x <- seq(1, 24, 1) # 여기까지는 벡터
+is.array(x)
+
+dim(x) <- c(24)
+is.array(x)
+
+dim(x) <- c(3,8)
+print(x) # 열 우선으로 표현
+
+dim(x) <- c(2, 4, 3) # 2*4 크기의 배열을 3개 구성
+print(x)
+
+dim(x) <- c(3, 8)
+t(x) # 행과 열을 전치하고자 하는 경우
+matrix(x, nrow=3, ncol=8, byrow=TRUE)
+
+x <- array(x, dim=c(3, 4, 2)) # array 함수 이용
+print(x)
+is.matrix(x)
+```
+
+## 배열 색인, 배열 구획
+배열의 원소는 대괄호([]: square bracket) 안에 첨자(subscript)를 이용하여 참조할 수 있다.
+```{r}
+x <- 1:12
+dim(x) <- c(3, 4)
+print(x)
+
+
+x[1,2]
+x[1:2,] # 2x4 배열
+dim(x[1:2,])
+
+x[1,] # 1x4 배열, 벡터
+dim(x[1,]) # 벡터는 차원이 없음
+is.vector(x[1,])
+is.array(x[1,])
+```
+
+## 색인 행렬
+```{r}
+x <- array(1:20, dim=c(4,5))
+print(x)
+
+i <- array(c(1:3, 3:1), dim=c(3,2)) # 특정 구역 정의
+print(i)
+x[i]
+
+x[i] <- 0 # 특정 구역의 값을 바꾸기
+print(x)
+```
+
+## 배열 외적
+배열의 외적(outer product, cross product)은 두개의 배열의 모든 가능한 조합의 배열이다.
+```{r}
+x <- array(1:3)
+y <- array(4:6)
+
+x %o% y # 외적
+outer(x, y, "*") # 함수 이용
+x %*% t(y) # 열 배열과 행 배열의 곱: 외적과 동일
+```
+
+# x, y의 모든 가능한 조합에서의 함수값 구하기 
+```{r}
+x <- y <- -10:10
+# f <- function(x,y) cos(y)/(1+x^2)
+f <- function(x, y) return(x^2+y^2)
+z <- outer(x, y, f)
+print(z[, 1:3], digits=4)
+contour(x, y, z)
+```
+
+## 배열의 전치
+```{r}
+x = array(1:10, dim=c(2,5))
+print(x)
+t(x)
+```
+
+
+## 행렬 기반의 함수
+### 행렬 곱
+```{r}
+# 행 우선으로 행렬 생성
+A = matrix(1:6, nrow=3, ncol=3, byrow=T)
+B = matrix(1:6, nrow=3, ncol=3, byrow=T)
+x = 1:3
+
+print(A)
+print(B)
+print(A * B) # 원소별 곱
+print(A %*% B) # 행렬 곱
+
+t(x) %*% A %*% x
+
+diag(1:3) #  벡터의 값을 대각 원소의 값으로 갖는 행렬 출력
+diag(A) # 기존 행렬의 대각 원소의 값을 벡터로 출력 
+is.vector(diag(A))
+```
+
+### 선형 방정식과 역 행렬
+$$
+Ax=b \Rightarrow x=A^{-1}b
+$$
+```{r}
+A <-  matrix(c(1,3,2, 2, 4, 5, 6, 4,3), nrow=3)
+b <- array(c(3, 2, 2))
+
+# A의 역행렬 구한 후 값 구하기: 수치적으로 비효율적이며 불안정함
+A_inverse=solve(A)
+solve(A) %*% b 
+
+# 추천 방식: 직접 선형 방정식을 입력
+solve(A, b) 
+```
+
+### 고유값과 고유벡터
+$$
+Ax = \lambda x, x: eigenvector, \lambda: eigenvalue
+$$
+
+```{r}
+# 대칭(symmetric) 행렬 구성
+B <-  matrix(c(1, 3, 2, 2, 4, 5, 6, 4, 3), nrow=3)
+A <- t(B) %*% B  
+
+# 고유값, 고유벡터 계산
+ev <- eigen(A)
+print(ev)
+
+mode(ev) # 고유 속성은 리스트
+# 고유값을 가져오기 위한 방법
+ev$values # 고유값 
+ev["values"]
+
+# 고유벡터
+ev$vectors
+
+# 확인: 1번째 고유값과 고유벡터
+print(A %*% ev$vectors[,1])
+print(ev$values[1]*ev$vectors[,1])
+```
+
+### 특이값 분해 및 행렬식
+$$
+A_{n\times p} = U_{n\times r}D_{r\times r}V^T_{r\times p},\\ U, V: orthogonal \enspace  matrix \\D: diagonal \enspace matrix
+$$
+```{r}
+# 행렬 생성
+A <-  matrix(c(1,3,2, 2, 4, 5, 6, 4,3, 10), nrow=2)
+print(A)
+dim(A)
+
+# 특이값 분해
+svd <- svd(A)
+print(svd)
+
+# 원 행렬과 같은지 확인
+svd$u %*% diag(svd$d) %*% t(svd$v)
+
+# 정방행렬 생성
+B <- t(A) %*% A
+det(B)
+```
+
+### 최소제곱 적합, QR 분해
+$$
+Least\enspace Squares\enspace Fitting: min_{\beta} (y-X\beta)^T(y-X\beta) \\
+normal \enspace equation: X^TX=X^Ty  \\
+QR \enspace decompostion: X^TX=QR , \\
+Q: orthogonal \enspace matrix, R: upper \enspace triangular \enspace matrix
+$$
+
+```{r}
+# X, y 생성
+X <-  matrix(c(1,3,2, 2, 2, 5, 6, 4,3, 10), nrow=5)
+y <- rnorm(5, 0, 1)
+
+# 최소제곱 적합
+fit <- lsfit(X, y, intercept = T)
+print(fit)
+# 회귀계수
+fit$coef
+
+# QR 분해에 의한 회귀직선 적합: 절편항을 추가 후 적합
+X_plus_ones = cbind(array(1, dim=c(5,1)), X)
+qr <- qr(X_plus_ones, y)
+print(qr$qr)
+
+# Q & R
+Q = qr.Q(qr)
+R = qr.R(qr)
+print(Q)
+print(R)
+
+# 확인 
+Q %*% R
+
+
+# 회귀계수
+qr.coef(qr, y)
+```
+
+## 분할 행렬 구성(partitioned matrix)
+벡터나 행렬로부터 새로운 행렬을 구성하는 것을 의미한다. 
+```{r}
+# 행렬 구성
+X <-  matrix(c(1, 3, 2, 2, 2, 5, 6, 4, 3, 10), nrow=5)
+print(X)
+cy <- rnorm(5, 0, 1)
+ry <- runif(2)
+
+# 열 별 결합
+XwithCY <- cbind(X, cy)
+print(XwithCY)
+is.matrix(XwithCY)
+
+# 행 별 결합
+XbelowRY <- rbind(X, ry)
+print(XwithCY)
+
+# 자동 차원 조절
+cbind(1, X)
+rbind(1, X)
+```
+
+## 연결 함수
+c 함수는 차원을 없애고 연결한다.
+```{r}
+# 행렬 생성
+X <-  matrix(c(1, 3, 2, 2, 2, 5, 6, 4, 3, 10), nrow=2)
+print(X)
+as.vector(X) # 열 우선으로 벡터를 구성
+
+# 연결함수 적용
+c(X, X)
+is.matrix(c(X, X))
+```
+
+## 요인벡터를 이용한 빈도표 생성
+```{r}
+# 범주 데이터 구성
+state <- c("tas", "sa", "qld", "nsw", "nsw", "nt", "wa", "wa",
+"qld", "vic", "nsw", "vic", "qld", "qld", "sa", "tas",
+"sa", "nt", "wa", "vic", "qld", "nsw", "nsw", "wa",
+"sa", "act", "nsw", "vic", "vic", "act")
+
+# 원 데이터로 부터 빈도표 구성
+table(state)
+```
+
+```{r}
+# 인자 생성
+statef <- factor(state)
+# 인자로부터 빈도표 구성
+table(statef)
+
+# 숫자 데이터 구성: 인자와 같은 크기로 구성
+income <- runif(length(state), 10, 100)
+
+# 데이터 값의 4분위수에 해당 하는 값을 구성(버킷 구성): 범주 변수로 재탄생
+incomecut <- cut(income, breaks=quantile(income, probs=seq(0,1, 0.25)), include.lowest=T)
+print(incomecut)
+
+# 빈도표 구성 
+incomef <- factor(incomecut)
+table(incomef) # 빈도가 비슷
+
+# 2원 빈도표 구성
+table(statef, incomef)
+```
+
+
+```{r}
+# 원 데이터로부터 구성: 범주 변수인 경우는 동일
+table(state, incomef)
+
+# 그림으로 확인
+plot(table(statef, incomef))
+plot(table(state, incomef))
+```
+
+# 리스트와 데이터프레임
+## 리스트
+리스트(list)는 객체들을 순서대로 모아 놓은 모임이다. 
+각 객체들은 구성원(component)이라 한다.
+```{r}
+# 구성원 생성
+x <- c(1:10)
+y <- matrix(seq(1,6), nrow=2)
+z <- 'R 기반의 통계분석'
+
+# 리스트 생성 및 구성원에 대한 이름 주기
+lst <- list(x=x, y=y, z=z) 
+print(lst)
+names(lst)
+
+# lst <- list(x, y, z)
+# print(lst)
+# names(lst)
+
+# 이름으로 구성원 가져오기
+lst$x 
+
+# 색인으로 구성원 가져오기
+lst[[3]]
+lst[3]
+
+# 구성원에서 특정 위치 값 가져오기
+lst[[1]][1] 
+lst[[2]][1,2]
+```
+
+### 리스트 수정, 리스트 연결
+```{r}
+# 구성원 생성
+x <- c(1:10)
+y <- matrix(seq(1,6), nrow=2)
+
+# 리스트 생성
+lst <- list(x=x, y=y) 
+print(lst)
+
+# 리스트 수정
+lst[[2]] <- matrix(seq(1,6), nrow=3)
+lst$y <- matrix(seq(1,6), nrow=3)
+print(lst)
+
+# 리스트 연결
+clist <- c(lst, lst)
+mode(clist)
+```
+
+## 데이터프레임
+### 데이터프레임 생성
+```{r}
+# 태그 없는 데이터프레임
+df <- data.frame(rnorm(100), runif(100), sample(c('A','B', 'C', 'D'), 100, replace=T))
+str(df)
+
+# 태그 있는 데이터프레임
+df <- data.frame(a=rnorm(100), b=runif(100), c=sample(c('A','B', 'C', 'D'), 100, replace=T))
+str(df)
+mode(df)
+
+# 각 구성원은 참조하는 방법은 리스트와 동일. 각 구성원도 데이터프레임
+df["a"][1:5,] 
+df[1:5, 'a']
+```
+
+### attach(), detach()
+```{r}
+# 데이터프레임 생성
+df <- data.frame(a=rnorm(10), b=runif(10), c=sample(c('A','B', 'C', 'D'), 10, replace=T))
+# 탐색 경로
+search()
+# 탐색 경로에 있는 객체이름 목록
+# ls(.GlobalEnv, )
+
+# 탐색 경로 2번째에 올리기
+attach(df)
+search()
+
+# 객체의 목록 보기
+ls(df)
+# 탐색 경로 위치로 검색
+ls(2) 
+
+# 구성원 이름 확인 및 내용 보기
+print(a)
+plot(a)
+
+# 탐색 경로에서 해제하기
+detach(df)
+```
+
+### 파일로부터 데이터 읽기
+URL로부터 데이터 읽기
+```{r}
+df <- read.table("https://archive.ics.uci.edu/ml/machine-learning-databases/housing/housing.data")
+
+# 디폴트 변수명
+names(df)
+
+# 변수명 새로 주기
+names(df) <- c("CRIM","ZN","INDUS","CHAS","NOX","RM","AGE","DIS","RAD","TAX","PTRATIO","B","LSTAT","MEDV")
+
+# 데이터 구조 탐색
+str(df)
+# dim(df)
+# nrow(df)
+# ncol(df)
+
+# 데이터 내용 보기
+head(df)
+tail(df)
+```
+
+하나의 긴 배열로 데이터 읽기
+```{r}
+dataArray  <- scan("https://archive.ics.uci.edu/ml/machine-learning-databases/housing/housing.data")
+dataArray[1:20]
+
+# 데이터 모양 정하고 데이터 프레임 생성하기
+dim(dataArray) <- c(506, 14)
+df <- as.data.frame(dataArray)
+
+# 데이터 구조 탐색
+str(df)
+class(df)
+```
+
+.csv 파일 읽기
+```{r}
+data_path <- c('C:\\banene03\\R\\KM\\Data')
+df <- read.table(paste0(data_path, '/bank.csv'), sep=',', header=T)
+# df <- read.csv(paste0(data_path, '/bank.csv'))
+str(df)
+# summary(df)
+```
+
+### 내장된 데이터 읽기
+
+```{r}
+# datasets 패키지에 내장된 데이터 목록
+dlist <- data(package='datasets')
+
+# 리스트의 구조
+str(dlist)
+
+# 데이터목록 5개만 출력
+head(dlist$results, 5)
+
+# 데이터 바로 이용하기
+str(BJsales)
+plot(BJsales)
+str(iris)
+plot(iris)
+```
+
+다른 패키지에서 제공되는 데이터 목록 확인 및 로딩
+```{r}
+library(ISLR)
+head(data(package='ISLR')$results, 5) 
+
+# 데이터 바로 이용하기
+names(Auto)
+```
+
+# 확률 분포
+## 통계표
+표준정규분포: 평균 0, 표준편차 1
+$$
+density \enspace function: \enspace f(x) = {1 \over {\sqrt{2\pi}}} e^{-x^2 \over 2}  \\
+distribution  \enspace function: \enspace P(X \le x)=\int_{-\infty}^{x} f(x)dx
+$$
+```{r}
+x <- seq(-3, 3, 0.1)
+
+# 확률밀도함수
+prob_X_equal_x <-dnorm(x, mean=0, sd=1)
+plot(x, prob_X_equal_x)
+
+# 분포함수
+prob_X_le_x <- pnorm(x, 0,1)
+plot(x, prob_X_le_x)
+
+# 분위수함수
+qnorm(seq(0,1, 0.05))
+x_where_prob_X_le_0.05 <- qnorm(0.05)
+
+plot(x, prob_X_le_x)
+abline(h=0.05)
+abline(v=x_where_prob_X_le_0.05, col='red')
+
+
+# 상위 2.5% 에 해당하는 분위수 찾기
+qnorm(1-0.025)
+
+# 상위 0.5% 에 해당하는 분위수 찾기
+qnorm(1-0.005)
+
+# 난수 생성
+set.seed(123456789)
+rnorm(5, 0, 1) 
+```
+
+t 분포: 정규분포보다 꼬리가 두꺼움
+```{r}
+x <- seq(-3, 3, 0.1)
+
+# 확률밀도함수
+prob_X_equal_x <-dt(x, df=1)
+plot(x, prob_X_equal_x)
+
+# 상위 2.5% 에 해당하는 분위수 찾기
+qt(1-0.025, df=10)
+```
+
+## 분포 탐색
+미국 Yellowstone 국립공원내의 Old Faithful의 간헐온천(geyser) 분출시간(분)과 분출간 대기시간
+```{r}
+# datasets 패키지의 데이터
+data(package='datasets')
+# faithful                        Old Faithful Geyser Data
+
+str(faithful)
+attach(faithful)
+# ls(faithful)
+```
+
+요약 통계량
+```{r}
+summary(eruptions)
+fivenum(eruptions) # 평균 제외
+```
+
+
+```{r}
+# 줄기-잎 그림
+stem(eruptions)
+```
+
+```{r}
+# 히스토그램
+hist(eruptions)
+```
+
+```{r}
+hist(eruptions, seq(1.6, 5.2, 0.2), prob=TRUE)
+lines(density(eruptions, bw = "SJ")) # 커널 밀도 추정량, bw는 띠너비 옵션
+rug(eruptions, side=1)
+```
+$$
+empirical \enspace cumulative \enspace distribution \enspace function = F_n(t) = \sum_{i=1}^{n} 1_{X_i \le t}
+$$
+```{r}
+# 경험 분포
+plot(ecdf(eruptions), do.points=FALSE, verticals=TRUE) # 정규 분포와는 거리가 있음
+```
+
+```{r}
+# 일부 구간만 설정 후 정규분포와 비교
+long <- eruptions[eruptions > 3]
+plot(ecdf(long), do.points=FALSE, verticals=TRUE) # 정규 분포와는 거리가 있음
+x <- seq(3, 5.4, 0.01)
+lines(x, pnorm(x, mean=mean(long), sd=sqrt(var(long))), lty=3)
+```
+
+```{r}
+# Q-Q 그림: 짧은 우측 꼬리
+hist(long)
+qqnorm(long)
+qqline(long)
+```
+
+```{r}
+# t 분포와 정규분포 비교: 긴 꼬리
+x <- rt(250, df = 5)
+hist(x)
+qqnorm(x)
+qqline(x)
+```
+
+```{r}
+# 정규 분포 검정: Shapiro-Wilk test,  Kolmogorov-Smirnov test
+shapiro.test(long) # 5% 유의수준에서 정규분포가 아님
+
+ks.test(long, "pnorm", mean = mean(long), sd = sqrt(var(long)))
+```
+
+## 2-표본 검정
+$$
+H_0: \bar X_A = \bar X_B
+$$
+```{r}
+# 얼음융합 잠재열 데이터: 방법 A, 방법 B
+A <- "79.98 80.04 80.02 80.04 80.03 80.03 80.04 79.97 80.05 80.03 80.02 80.00 80.02"
+A <- as.numeric(strsplit(A, " ")[[1]])
+
+B <- "80.02 79.94 79.98 79.97 79.97 80.03 79.95 79.97"
+B <- as.numeric(strsplit(B, " ")[[1]])
+```
+
+```{r}
+# 상자그림으로 평균의 차이 확인
+summary(A)
+summary(B)
+boxplot(A, B, names=c('A', 'B'))
+```
+
+```{r}
+# 2집단의 표본의 개수 확인
+length(A)
+length(B)
+
+```
+
+```{r}
+# 등분산 가정이 없는 평균 동일여부 검정
+t.test(A, B)
+```
+
+```{r}
+# 등분산에 대한 검정
+var.test(A, B)
+```
+
+```{r}
+# 등분산 가정 
+t.test(A, B, var.equal=TRUE)
+```
+
+```{r}
+# 정규 가정 없는 비모수 검정
+wilcox.test(A, B)
+```
+$$
+KS \enspace statistic: D_{n,m}(x) = sup_{x}|F_n(x)-Fm(x)| \\
+F_n(x)= {1 \over n} \sum_{i=1}^n 1_{X_i \le x} \\
+critical \enspace region: D_{n,m}(x) > c(\alpha)\sqrt{(n+m) \over nm} \\
+c(\alpha) = \sqrt{{-1 \over 2 }ln(\alpha )}
+$$
+
+```{r}
+# 분포 동일성 여부에 대하여 경험분포로부터 확인
+plot(ecdf(A), do.points=FALSE, verticals=TRUE, xlim=range(A, B))
+plot(ecdf(B), do.points=T, verticals=TRUE, lty=3, add=TRUE)
+ks.test(A, B)
+
+m= length(A)
+n = length(B)
+alpha = 0.025
+c_alpha = sqrt(-0.5*log(alpha))
+d_alpha = c_alpha*sqrt((m+n)/(m*n))
+```
+# 그룹화, 반복, 조건 실행
+## 조건문
+### if 문
+
+```{r}
+
+# 기본 형식
+if (2 %in% c(1, 2,3)) print(TRUE) else print(FALSE)
+
+# 단락(short-circuit)
+if (4 %in% c(1, 2,3) && 3 %in% c(1,2,3)) print(TRUE) else print(FALSE)
+```
+
+
+
