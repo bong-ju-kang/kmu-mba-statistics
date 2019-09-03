@@ -1,6 +1,6 @@
 #
 # Bong Ju Kang
-# R을 이용한 통계분석의 이해와 활용
+# R 기반의 통계분석: 기초부터 활용까지
 # 
 # created: 6/10/2019
 # name: R_introduction_xxxxxxxx.R
