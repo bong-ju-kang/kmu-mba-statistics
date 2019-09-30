@@ -348,3 +348,5 @@ diag(matrix(1:12, nrow=3)) # 정방행렬이 아니어도 됨
 x <- rep(c(1, 2, 3), times=3)
 A <- matrix(x, nrow=3)
 t(A) %*% A  
+
+
