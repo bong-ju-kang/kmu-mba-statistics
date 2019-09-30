@@ -165,6 +165,7 @@ tapply(incomes, statef, sd)
 
 tapply(incomes, statef, sum)
 
+
 #
 # 배열과 행렬
 #
